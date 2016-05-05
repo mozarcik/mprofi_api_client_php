@@ -1,6 +1,7 @@
 {
   "name": "mprofi/api-client",
   "description": "mProfi api client implementation",
+  "license": "MIT",
   "require": {
     "php": ">=5.4",
     "ext-curl": "*"
