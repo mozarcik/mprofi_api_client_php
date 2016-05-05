@@ -80,18 +80,19 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $client->send($messages);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage You must pass at least one message
+     */
     public function testSendNoMessagesException()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('You must pass at least one message');
-
         $messages = [];
         /** @var Client|PHPUnit_Framework_MockObject_MockObject $client */
         $client = $this->getMockBuilder('mprofi\Client')
             ->setMethods(array('sendCurlRequest'))
             ->setConstructorArgs(['qwertyuiop'])
             ->getMock();
-        
+
         $client->send($messages);
     }
 }
