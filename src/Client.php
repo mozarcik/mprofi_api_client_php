@@ -109,12 +109,10 @@ class Client
      */
     protected function sendCurlRequest($endpoint, $payload)
     {
-        $fullUrl = join('/', [$this->baseUrl, $this->apiVersion, $endpoint, '']);
-
         // init curl
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, $fullUrl);
+        curl_setopt($curl, CURLOPT_URL, $this->createUrl($endpoint));
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -148,12 +146,9 @@ class Client
      */
     public function getStatus($id)
     {
-        $fullUrl = join('/', [$this->baseUrl, $this->apiVersion, $this->statusEndpoint, '']);
-        $fullUrl .= '?apikey=' . $this->apiToken . '&id=' . $id;
-
         // init curl
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $fullUrl);
+        curl_setopt($curl, CURLOPT_URL, $this->createUrl($this->statusEndpoint, ['apikey' => $this->apiToken, 'id' => $id]));
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -173,6 +168,25 @@ class Client
             case 401:
                 throw new InvalidTokenException('API call failed with HTTP ' . $httpCode . ' - make sure the supplied API Token is valid');
         }
+    }
+
+    /**
+     * Create api url based on specified endpoint and url params.
+     *
+     * @param string $endpoint
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function createUrl($endpoint, $params = [])
+    {
+        $url = join('/', [$this->baseUrl, $this->apiVersion, $endpoint, '']);
+
+        if ($params === []) {
+            return $url;
+        }
+
+        return $url . '?' . http_build_query($params);
     }
 }
 

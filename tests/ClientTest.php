@@ -95,4 +95,13 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
         $client->send($messages);
     }
+
+    public function testCreateUrl()
+    {
+        $client = new Client('qwertyuiop');
+
+        $this->assertEquals('https://api.mprofi.pl/1.0/send/', $client->createUrl($client->sendEndpoint));
+        $this->assertEquals('https://api.mprofi.pl/1.0/sendbulk/', $client->createUrl($client->sendBulkEndpoint));
+        $this->assertEquals('https://api.mprofi.pl/1.0/status/?apikey=qwertyuiop&id=23421', $client->createUrl($client->statusEndpoint, ['apikey' => 'qwertyuiop', 'id' => 23421]));
+    }
 }
